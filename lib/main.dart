@@ -19,7 +19,6 @@ class PayCalculatorScreen extends StatefulWidget {
   const PayCalculatorScreen({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _PayCalculatorScreenState createState() => _PayCalculatorScreenState();
 }
 
@@ -34,57 +33,101 @@ class _PayCalculatorScreenState extends State<PayCalculatorScreen> {
   final String collegeID = '30136578';
   final String name = 'Saroj Kunwar';
 
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pay Calculator'),
+        title: const Text('Pay Calculator'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: hoursController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'Number of Hours Worked'),
-            ),
-            TextField(
-              controller: rateController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'Hourly Rate'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                calculatePay();
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.lightGreen, // Light green color
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextFormField(
+                controller: hoursController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Number of Hours Worked',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the number of hours worked';
+                  }
+                  return null;
+                },
               ),
-              child: const Text('Calculate'),
-            ),
-            const SizedBox(height: 20),
-            const Text('Report', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            const SizedBox(height: 20),
-            Text('Regular Pay: ${regularPay.toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('Overtime Pay: ${overtimePay.toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('Total Pay: ${totalPay.toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('Tax: ${tax.toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20), 
-            Container(
-              color: Color.fromARGB(255, 109, 108, 107), // You can customize the color
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('College ID: $collegeID', style: TextStyle(color: Colors.white)),
-                  Text('Name: $name', style: TextStyle(color: Colors.white)),
-                ],
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: rateController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Hourly Rate',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the hourly rate';
+                  }
+                  return null;
+                },
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    calculatePay();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue, // Blue color
+                  minimumSize: const Size(80, 50),
+                ),
+                child: const Text('Calculate'),
+              ),
+              SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Center(
+                      child: Text(
+                        'Report',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text('Regular Pay: ${regularPay.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text('Overtime Pay: ${overtimePay.toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('Total Pay: ${totalPay.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text('Tax: ${tax.toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                color: Color.fromARGB(255, 109, 108, 107),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('College ID: $collegeID', style: TextStyle(color: Colors.white)),
+                    Text('Name: $name', style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
